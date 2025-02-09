@@ -8,6 +8,7 @@ export const AppContextProvider = ({ children }) => {
   const currency = import.meta.env.VITE_CURRENCY;
   const [allCourses, setAllCourses] = useState([]);
   const [isEducator, setIsEducator] = useState(false);
+  const [enrolledCourses, setEnrolledCourses] = useState([]);
 
   // Fetch all courses
   const fetchAllCourses = async () => {
@@ -45,6 +46,12 @@ export const AppContextProvider = ({ children }) => {
     return lectures;
   };
 
+  // Function to set enrolled courses
+  const fetchUserEnrolledCourse = () => {
+    setEnrolledCourses(dummyCourses.filter(course => course.enrolledStudents.includes('user_2qQlvXyr02B4Bq6hT0Gvaa5fT9V')));
+  };
+
+
   const initialState = {
     user: null,
     currency,
@@ -54,10 +61,13 @@ export const AppContextProvider = ({ children }) => {
     calculateCourseChapterTime,
     calculateCourseDuration,
     calculateNoOfLectures,
+    enrolledCourses,
+    fetchUserEnrolledCourse,
   };
 
   useEffect(() => {
     fetchAllCourses();
+    fetchUserEnrolledCourse();
   }, []);
 
   return (
