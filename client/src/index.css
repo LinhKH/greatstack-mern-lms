@@ -7,3 +7,10 @@
 * {
   font-family: Outfit;
 }
+
+.rich-text {
+  font-size: 15px; color: #7A7B7D;
+}
+.rich-text p {
+  margin-bottom: 16px;
+}
