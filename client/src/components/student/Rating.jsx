@@ -6,7 +6,6 @@ import { useLocation } from "react-router-dom";
 const Rating = ({ course }) => {
   const { calculateAverageRating } = useContext(AppContext);
   const { pathname } = useLocation();
-  console.log(pathname);
   return (
     <div className="flex items-center space-x-2 pt-3 pb-1 text-sm">
       <p>{calculateAverageRating(course)}</p>

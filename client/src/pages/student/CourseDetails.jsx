@@ -11,7 +11,9 @@ import Youtube from "react-youtube";
 const CourseDetails = () => {
   const { id } = useParams();
   const [courseData, setCourseData] = useState(null);
-  const [openSections, setOpenSections] = useState({});
+  const [openSections, setOpenSections] = useState({
+    0: true
+  });
   const [isAlreadyEnrolled, setIsAlreadyEnrolled] = useState(false);
   const [playerData, setPlayerData] = useState(null);
   const {
