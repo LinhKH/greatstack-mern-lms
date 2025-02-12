@@ -25,7 +25,7 @@ export const clerkWebhook = async (req, res) => {
       case "user.created":
         const newUser = new User({
           clerkUserId: data.id,
-          username: data.username || data.email_addresses[0].email_address,
+          name: data.first_name + ' ' + data.last_name || data.email_addresses[0].email_address,
           email: data.email_addresses[0].email_address,
           imageUrl: data.profile_img_url,
         });
