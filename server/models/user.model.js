@@ -3,10 +3,9 @@ import bcryptjs from "bcryptjs";
 
 const userSchema = new mongoose.Schema(
   {
-    clerkUserId: {
+    _id: {
       type: String,
       required: true,
-      unique: true,
     },
     name: {
       type: String,
@@ -16,10 +15,6 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, "provide email"],
       unique: true,
-    },
-    password: {
-      type: String,
-      required: [true, "provide password"],
     },
     imageUrl: {
       type: String,
@@ -36,19 +31,6 @@ const userSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
-
-// Pre-save hook to hash the password
-userSchema.pre("save", async function (next) {
-  if (this.isModified("password") || this.isNew) {
-    this.password = await bcryptjs.hash(this.password, 10);
-  }
-  next();
-});
-
-// Method to check password
-userSchema.methods.checkPassword = async function (password) {
-  return await bcryptjs.compare(password, this.password);
-};
 
 const UserModel = mongoose.model("User", userSchema);
 

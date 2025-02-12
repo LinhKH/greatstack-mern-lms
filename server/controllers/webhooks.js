@@ -24,7 +24,7 @@ export const clerkWebhook = async (req, res) => {
     switch (type) {
       case "user.created":
         const newUser = new User({
-          clerkUserId: data.id,
+          _id: data.id,
           name: data.first_name + ' ' + data.last_name || data.email_addresses[0].email_address,
           email: data.email_addresses[0].email_address,
           imageUrl: data.profile_img_url,
@@ -35,7 +35,7 @@ export const clerkWebhook = async (req, res) => {
         break;
       case "user.updated":
         const updatedUser = await User.findOneAndUpdate(
-          { clerkUserId: data.id },
+          { _id: data.id },
           {
             name: data.first_name + ' ' + data.last_name || data.email_addresses[0].email_address,
             email: data.email_addresses[0].email_address,
@@ -47,7 +47,7 @@ export const clerkWebhook = async (req, res) => {
 
       case "user.deleted":
         const deletedUser = await User.findOneAndDelete({
-          clerkUserId: data.id,
+          _id: data.id,
         });
         break;
     
