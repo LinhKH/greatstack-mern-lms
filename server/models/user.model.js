@@ -3,9 +3,10 @@ import bcryptjs from "bcryptjs";
 
 const userSchema = new mongoose.Schema(
   {
-    _id: {
+    clerkUserId: {
       type: String,
       required: true,
+      unique: true,
     },
     name: {
       type: String,
