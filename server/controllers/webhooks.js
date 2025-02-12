@@ -14,13 +14,13 @@ export const clerkWebhook = async (req, res) => {
 
   try {
     const webhook = new Webhook(WEBHOOK_SECRET);
-    evt = await webhook.verify(payload, {
+    evt = await webhook.verify(JSON.stringify(payload), {
       "svix-id": headers["svix-id"],
       "svix-timestamp": headers["svix-timestamp"],
       "svix-signature": headers["svix-signature"],
     });
     const { type, data } = evt;
-
+    console.log(evt);
     switch (type) {
       case "user.created":
         const newUser = new User({
