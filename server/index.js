@@ -12,7 +12,7 @@ const app = express();
 app.use(morgan('tiny'));
 
 app.use(cors());
-app.use(clerkMiddleware());
+// app.use(clerkMiddleware());
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
