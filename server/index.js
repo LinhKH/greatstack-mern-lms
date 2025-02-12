@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import 'dotenv/config';
 import morgan from "morgan";
+import bodyParser from "body-parser";
 import { clerkMiddleware } from "@clerk/express";
 
 import connectDB from "./configs/connectDB.js";
@@ -17,7 +18,7 @@ app.get('/', (req, res) => {
   res.send('Hello World!');
 });
 
-app.post('/clerk', express.json(), clerkWebhook);
+app.post('/clerk', bodyParser.raw({ type: "application/json" }), clerkWebhook);
 
 const PORT = process.env.PORT || 5000;
 
