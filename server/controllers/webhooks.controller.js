@@ -22,7 +22,7 @@ export const clerkWebhook = async (req, res) => {
     });
   }
   const { type, data } = evt;
-  console.log(evt);
+  // console.log(evt);
   switch (type) {
     case "user.created":
       const newUser = new User({
