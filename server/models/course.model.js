@@ -49,6 +49,14 @@ const chapterSchema = new mongoose.Schema(
   { _id: false }
 );
 
+const ratingSchema = new mongoose.Schema(
+  {
+    userId: { type: mongoose.Schema.ObjectId, ref: "User" },
+    rating: { type: Number, min: 1, max: 5 },
+  },
+  { _id: false }
+);
+
 const courseSchema = new mongoose.Schema(
   {
     courseTitle: {
@@ -77,12 +85,7 @@ const courseSchema = new mongoose.Schema(
       max: 100,
     },
     courseContent: [chapterSchema],
-    courseRatings: [
-      {
-        userId: { type: String },
-        rating: { type: Number, min: 1, max: 5 },
-      },
-    ],
+    courseRatings: [ratingSchema],
     educator: {
       type: mongoose.Schema.ObjectId,
       ref: "User",

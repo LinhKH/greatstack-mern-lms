@@ -88,8 +88,6 @@ export const stripeWebhook = async (req, res) => {
         payment_intent: paymentIntentId,
       });
 
-      console.log(session)
-
       const { purchaseId } = session.data[0].metadata;
 
       const purchaseData = await PurchaseModel.findById(purchaseId);
@@ -104,7 +102,7 @@ export const stripeWebhook = async (req, res) => {
       await purchaseData.save();
 
       break;
-    
+
     case "payment_intent.payment_failed":
       const failedPaymentIntent = evt.data.object;
       const failedPaymentIntentId = failedPaymentIntent.id;
@@ -125,5 +123,5 @@ export const stripeWebhook = async (req, res) => {
       break;
   }
 
-  res.json({received: true});
+  res.json({ received: true });
 };
