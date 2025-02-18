@@ -92,7 +92,7 @@ export const stripeWebhook = async (req, res) => {
 
       const { purchaseId } = session.data[0].metadata;
 
-      const purchaseData = await PurchaseModel.findbyId(purchaseId);
+      const purchaseData = await PurchaseModel.findById(purchaseId);
       const userData = await UserModel.findById(purchaseData.userId);
       const courseData = await CourseModel.findById(purchaseData.courseId);
 
@@ -114,7 +114,7 @@ export const stripeWebhook = async (req, res) => {
       });
 
       const { FailedPurchaseId } = failedSession.data[0].metadata;
-      const failedPurchaseData = await PurchaseModel.findbyId(FailedPurchaseId);
+      const failedPurchaseData = await PurchaseModel.findById(FailedPurchaseId);
       failedPurchaseData.status = "failed";
       failedPurchaseData.save();
 
