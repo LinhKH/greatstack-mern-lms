@@ -77,7 +77,7 @@ export const stripeWebhook = async (req, res) => {
     throw new Error("Webhook secret needed!");
   }
 
-  const evt = request.body;
+  const evt = req.body;
   console.log(evt);
   switch (type) {
     case "payment_intent.succeeded":
