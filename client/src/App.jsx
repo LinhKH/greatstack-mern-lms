@@ -13,6 +13,7 @@ import MyCourses from "./pages/educator/MyCourses";
 import StudentsEnrolled from "./pages/educator/StudentsEnrolled";
 import Navbar from "./components/student/Navbar";
 import "quill/dist/quill.snow.css";
+import { Toaster } from "sonner";
 
 const App = () => {
   const isEducatorPage = useMatch("/educator/*");
@@ -35,6 +36,7 @@ const App = () => {
           <Route path="student-enrolled" element={<StudentsEnrolled />} />
         </Route>
       </Routes>
+      <Toaster position="top-center" richColors />
     </div>
   );
 };

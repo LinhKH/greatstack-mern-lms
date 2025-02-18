@@ -1,19 +1,48 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../context/AppContext";
 import { useNavigate } from "react-router-dom";
 import { Line } from "rc-progress";
 import Footer from "../../components/student/Footer";
+import axios from "axios";
 
 const MyEnrollments = () => {
   const navigate = useNavigate();
-  const { enrolledCourses, calculateCourseDuration } = useContext(AppContext);
-  const [progressArray, setProgressArray] = useState([
-    { lectureCompleted: 4, totalLecture: 14 },
-    { lectureCompleted: 12, totalLecture: 12 },
-    { lectureCompleted: 3, totalLecture: 13 },
-    { lectureCompleted: 4, totalLecture: 15 },
-    { lectureCompleted: 4, totalLecture: 15 },
-  ]);
+  const { enrolledCourses, calculateCourseDuration, getToken, calculateNoOfLectures, userData, fetchUserEnrolledCourse, backendUrl } = useContext(AppContext);
+  const [progressArray, setProgressArray] = useState([]);
+
+  const getCoursesProgress = async () => {
+    try {
+      const token = await getToken();
+      const tempProgressArray = await Promise.all(
+        enrolledCourses.map(async (course) => {
+          const { data } = await axios.post(
+            `${backendUrl}/api/user/get-course-progress`,
+            { courseId: course._id },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          let totalLecture = calculateNoOfLectures(course);
+          const lectureCompleted = data.progressData ? data.progressData.lectureCompleted.length : 0;
+          return { totalLecture, lectureCompleted };
+        })
+      );
+      setProgressArray(tempProgressArray);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserEnrolledCourse();
+  }, [userData]);
+  useEffect(() => {
+    if (enrolledCourses.length > 0) {
+      getCoursesProgress();
+    }
+  }, [enrolledCourses]);
   return (
     <>
       <div className="md:px-36 px-8 pt-10">
@@ -28,7 +57,7 @@ const MyEnrollments = () => {
             </tr>
           </thead>
           <tbody className="text-gray-700">
-            {enrolledCourses.map((course, index) => (
+            {enrolledCourses && enrolledCourses.map((course, index) => (
               <tr key={index} className="border-b border-gray-500/20">
                 <td className="md:px-4 pl-2 md:pl-4 py-3 flex items-center space-x-3">
                   <img
@@ -55,8 +84,8 @@ const MyEnrollments = () => {
                   {calculateCourseDuration(course)}
                 </td>
                 <td className="px-4 py-3 max-sm:hidden">
-                  {progressArray[index].lectureCompleted} /{" "}
-                  {progressArray[index].totalLecture}
+                  {progressArray[index]?.lectureCompleted} /{" "}
+                  {progressArray[index]?.totalLecture}
                   <span> Lectures</span>
                 </td>
                 <td className="px-4 py-3 max-sm:text-right">

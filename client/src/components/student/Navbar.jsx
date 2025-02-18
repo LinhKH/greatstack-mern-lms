@@ -3,13 +3,37 @@ import { assets } from "../../assets/assets";
 import { Link, useNavigate } from "react-router-dom";
 import { useClerk, UserButton, useUser } from "@clerk/clerk-react";
 import { AppContext } from "../../context/AppContext";
+import axios from "axios";
+import { toast } from "sonner";
 
 const Navbar = () => {
   const isCourseListPage = location.pathname.includes("/course-list");
   const { openSignIn } = useClerk();
   const { user } = useUser();
   const navigate = useNavigate();
-  const {isEducator} = useContext(AppContext);
+  const {isEducator, backendUrl, setIsEducator, getToken} = useContext(AppContext);
+
+  const becomeEducator = async () => {
+    if (isEducator) {
+      navigate("/educator");
+      return;
+    }
+    const token = await getToken();
+    const { data } = await axios.get(backendUrl + "/api/educator/update-role", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (data.success) {
+      toast.success(data.message);
+      setIsEducator(true);
+    } else {
+      toast.error(data.message);
+    }
+
+
+  };
 
   return (
     <div
@@ -22,7 +46,7 @@ const Navbar = () => {
         <div className="flex items-center gap-5">
           {user && (
             <>
-              <button onClick={() => navigate('/educator')}>{isEducator ? 'Educator Dashboard' : 'Become Educator'}</button> |{" "}
+              <button onClick={becomeEducator}>{isEducator ? 'Educator Dashboard' : 'Become Educator'}</button> |{" "}
               <Link to="my-enrollments">My Enrollment</Link>
             </>
           )}
@@ -43,7 +67,7 @@ const Navbar = () => {
         <div className="flex items-center gap-1 sm:gap-2 max-sm:text-xs">
           {user && (
             <>
-              <button onClick={() => navigate('/educator')}>{isEducator ? 'Educator Dashboard' : 'Become Educator'}</button> |{" "}
+              <button onClick={becomeEducator}>{isEducator ? 'Educator Dashboard' : 'Become Educator'}</button> |{" "}
               <Link to="my-enrollments">My Enrollment</Link>
             </>
           )}

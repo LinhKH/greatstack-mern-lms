@@ -119,7 +119,7 @@ export const purchaseCourse = async (req, res) => {
         purchaseId: newPurchase._id.toString(),
       },
       line_items: line_items,
-      success_url: `${process.env.CLIENT_URL}/my-enrollments`,
+      success_url: `${process.env.CLIENT_URL}/loading/my-enrollments`,
       cancel_url: `${process.env.CLIENT_URL}/cancel`,
     };
 
