@@ -78,13 +78,13 @@ export const stripeWebhook = async (req, res) => {
   }
 
   const evt = req.body;
-  console.log(evt);
+  // console.log(evt);
   switch (evt.type) {
     case "payment_intent.succeeded":
       const paymentIntent = evt.data.object;
       const paymentIntentId = paymentIntent.id;
 
-      const session = Stripe.checkout.sessions.list({
+      const session = await Stripe.checkout.sessions.list({
         payment_intent: paymentIntentId,
       });
 
@@ -125,5 +125,5 @@ export const stripeWebhook = async (req, res) => {
       break;
   }
 
-  response.json({received: true});
+  res.json({received: true});
 };
