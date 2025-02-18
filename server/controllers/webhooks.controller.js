@@ -88,6 +88,8 @@ export const stripeWebhook = async (req, res) => {
         payment_intent: paymentIntentId,
       });
 
+      console.log(session)
+
       const { purchaseId } = session.data[0].metadata;
 
       const purchaseData = await PurchaseModel.findbyId(purchaseId);
@@ -119,7 +121,7 @@ export const stripeWebhook = async (req, res) => {
       break;
 
     default:
-      console.log(`Unhandled event type ${type}`);
+      console.log(`Unhandled event type ${evt.type}`);
       break;
   }
 
