@@ -7,8 +7,10 @@ import { clerkMiddleware } from "@clerk/express";
 
 import connectDB from "./configs/connectDB.js";
 import connectCloudinary from './configs/cloudinary.js';
-import { clerkWebhook } from './controllers/webhooks.controller.js';
+import { clerkWebhook, stripeWebhook } from './controllers/webhooks.controller.js';
 import educatorRouter from './routes/educator.route.js';
+import courseRouter from './routes/course.route.js';
+import userRouter from './routes/user.route.js';
 
 const app = express();
 app.use(morgan('tiny'));
@@ -22,7 +24,10 @@ app.get('/', (req, res) => {
 });
 
 app.post('/clerk', bodyParser.raw({ type: "application/json" }), clerkWebhook);
+app.post('/stripe', stripeWebhook);
 app.use('/api/educator', educatorRouter);
+app.use('/api/course', courseRouter);
+app.use('/api/user', userRouter);
 
 const PORT = process.env.PORT || 5000;
 
