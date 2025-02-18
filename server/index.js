@@ -24,7 +24,7 @@ app.get('/', (req, res) => {
 });
 
 app.post('/clerk', bodyParser.raw({ type: "application/json" }), clerkWebhook);
-app.post('/stripe', stripeWebhook);
+app.post('/stripe', express.json({type: 'application/json'}), stripeWebhook);
 app.use('/api/educator', educatorRouter);
 app.use('/api/course', courseRouter);
 app.use('/api/user', userRouter);
