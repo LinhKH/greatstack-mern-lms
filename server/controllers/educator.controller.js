@@ -46,7 +46,6 @@ export const addCourse = async (req, res) => {
       return res.status(404).json("User not found!");
     }
 
-    console.log(imageFile);
 
     if (!imageFile) {
       return res
@@ -66,6 +65,7 @@ export const addCourse = async (req, res) => {
         throw new Error(error.message);
       });
     parsedCourseData.courseThumbnail = result.secure_url;
+    console.log(parsedCourseData);
     const newCourse = new CourseModel(parsedCourseData);
 
     await newCourse.save();

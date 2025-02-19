@@ -14,6 +14,7 @@ const CourseDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [courseData, setCourseData] = useState(null);
+  const [daysLeft, setDaysLeft] = useState(null);
   const [openSections, setOpenSections] = useState({
     0: true,
   });
@@ -36,6 +37,7 @@ const CourseDetails = () => {
     const { data } = await axios.get(`${backendUrl}/api/course/${id}`);
     if (data.success) {
       setCourseData(data.course);
+      setDaysLeft(data.daysLeft);
     } else {
       toast.error(data.message);
     }
@@ -216,17 +218,19 @@ const CourseDetails = () => {
                 <img src={courseData.courseThumbnail} alt="courseThumbnail" />
               )}
               <div className="p-5">
-                <div className="flex items-center gap-2">
-                  <img
-                    className="w-3.5"
-                    src={assets.time_left_clock_icon}
-                    alt="time_left_clock_icon"
-                  />
-                  <p className="text-red-500">
-                    <span className="font-medium">5 days</span> left at this
-                    price
-                  </p>
-                </div>
+                {daysLeft && (
+                  <div className="flex items-center gap-2">
+                    <img
+                      className="w-3.5"
+                      src={assets.time_left_clock_icon}
+                      alt="time_left_clock_icon"
+                    />
+                    <p className="text-red-500">
+                      <span className="font-medium">{daysLeft} days</span> left
+                      at this price
+                    </p>
+                  </div>
+                )}
                 <div className="flex gap-3 items-center pt-2">
                   <p className="text-gray-800 md:text-4xl text-2xl font-semibold">
                     {currency}{" "}
@@ -258,19 +262,22 @@ const CourseDetails = () => {
                     <p>{calculateNoOfLectures(courseData)} lectures</p>
                   </div>
                 </div>
-                {!isAlreadyEnrolled && 
-                <button
-                  onClick={purchaseCourse}
-                  className="md:mt-6 mt-4 w-full py-3 text-white font-medium bg-blue-600 rounded"
-                >
-                  {"Enroll Now"}
-                </button>}
-                {isAlreadyEnrolled && <button
-                  onClick={() => navigate(`/player/${courseData._id}`)}
-                  className="md:mt-6 mt-4 w-full py-3 text-white font-medium bg-purple-600 rounded cursor-pointer"
-                >
-                  {"Go to Course"}
-                </button>}
+                {!isAlreadyEnrolled && (
+                  <button
+                    onClick={purchaseCourse}
+                    className="md:mt-6 mt-4 w-full py-3 text-white font-medium bg-blue-600 rounded"
+                  >
+                    {"Enroll Now"}
+                  </button>
+                )}
+                {isAlreadyEnrolled && (
+                  <button
+                    onClick={() => navigate(`/player/${courseData._id}`)}
+                    className="md:mt-6 mt-4 w-full py-3 text-white font-medium bg-purple-600 rounded cursor-pointer"
+                  >
+                    {"Go to Course"}
+                  </button>
+                )}
                 <div className="pt-6">
                   <p className="md:text-xl text-lg font-medium text-gray-800">
                     What's in the course?

@@ -1,8 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import uniqid from "uniqid";
 import Quill from "quill";
 import "quill/dist/quill.core.css";
 import { assets } from "../../assets/assets";
+import { AppContext } from "../../context/AppContext";
+import { toast } from "sonner";
+import axios from "axios";
 
 const AddCourse = () => {
   const quillRef = useRef(null);
@@ -15,12 +18,14 @@ const AddCourse = () => {
   const [chapters, setChapters] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [currentChapterId, setCurrentChapterId] = useState(null);
+  const [discountEndDate, setDiscountEndDate] = useState("");
   const [lectureDetails, setLectureDetails] = useState({
     lectureTitle: "",
     lectureDuration: "",
     lectureUrl: "",
     isPreviewFree: false,
   });
+  const {backendUrl, getToken} = useContext(AppContext);
 
   const handleChapter = (action, chapterId) => {
     if (action === "add") {
@@ -97,16 +102,50 @@ const AddCourse = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!image) {
+      return toast.error("Please select a thumbnail image");
+    }
+    const courseDescription = quillRef.current.root.innerHTML;
     const courseData = {
       courseTitle,
+      courseDescription,
       coursePrice,
       discount,
-      image,
-      chapters,
+      discountEndDate,
+      courseContent : chapters,
     };
     console.log(courseData);
+
+    // add course to database with image
+    const formData = new FormData();
+    formData.append("courseData", JSON.stringify(courseData));
+    formData.append("image", image);
+
+    const token = await getToken();
+    try {
+      const { data } = await axios.post(`${backendUrl}/api/educator/add-course`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (data.success) {
+        toast.success(data.message);
+        setCourseTitle("");
+        setCoursePrice(0);
+        setDiscount(0);
+        setImage(null);
+        setChapters([]);
+        quillRef.current.root.innerHTML = "";
+
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
   useEffect(() => {
@@ -179,6 +218,16 @@ const AddCourse = () => {
             value={discount}
             min={0}
             max={100}
+            className="outline-none md:py-2.5 py-2 w-28 px-3 rounded border border-gray-500"
+            required
+          />
+        </div>
+        <div className="flex flex-col gap-1">
+          <p>Discount End Date</p>
+          <input
+            type="date"
+            onChange={(e) => setDiscountEndDate(e.target.value)}
+            value={discountEndDate}
             className="outline-none md:py-2.5 py-2 w-28 px-3 rounded border border-gray-500"
             required
           />

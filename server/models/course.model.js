@@ -84,6 +84,10 @@ const courseSchema = new mongoose.Schema(
       min: 0,
       max: 100,
     },
+    discountEndDate: {
+      type: Date,
+      required: true,
+    },
     courseContent: [chapterSchema],
     courseRatings: [ratingSchema],
     educator: {

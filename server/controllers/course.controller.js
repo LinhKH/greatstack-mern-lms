@@ -32,7 +32,16 @@ export const getCourseById = async (req, res) => {
       });
     });
 
-    res.json({ success: true, course });
+    // calculate days left at this price
+    let daysLeft = null;
+    if (course.discountEndDate) {
+      const currentDate = new Date();
+      const discountEndDate = new Date(course.discountEndDate.toString());
+      const timeDiff = discountEndDate - currentDate;
+      daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+    }
+
+    res.json({ success: true, course, daysLeft });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: "Failed to fetch course" });
