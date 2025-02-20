@@ -11,6 +11,7 @@ import { clerkWebhook, stripeWebhook } from './controllers/webhooks.controller.j
 import educatorRouter from './routes/educator.route.js';
 import courseRouter from './routes/course.route.js';
 import userRouter from './routes/user.route.js';
+import newsletterRoutes from "./routes/newsletter.route.js";
 
 const app = express();
 app.use(morgan('tiny'));
@@ -28,6 +29,7 @@ app.post('/stripe', express.json({type: 'application/json'}), stripeWebhook);
 app.use('/api/educator', educatorRouter);
 app.use('/api/course', courseRouter);
 app.use('/api/user', userRouter);
+app.use("/api/newsletter", newsletterRoutes);
 
 const PORT = process.env.PORT || 5000;
 

@@ -53,6 +53,7 @@ const ratingSchema = new mongoose.Schema(
   {
     userId: { type: mongoose.Schema.ObjectId, ref: "User" },
     rating: { type: Number, min: 1, max: 5 },
+    comment: { type: String, required: true },
   },
   { _id: false }
 );

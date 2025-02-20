@@ -20,6 +20,9 @@ export const getCourseById = async (req, res) => {
   try {
     const course = await CourseModel.findById(req.params.id).populate({
       path: "educator",
+    }).populate({
+      path: "courseRatings.userId",
+      select: "name imageUrl",
     });
 
     // remove lectureUrl if isPreviewFree is false
@@ -47,5 +50,4 @@ export const getCourseById = async (req, res) => {
     res.status(500).json({ success: false, message: "Failed to fetch course" });
   }
 };
-
 

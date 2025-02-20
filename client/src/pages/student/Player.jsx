@@ -12,12 +12,18 @@ import Loading from "../../components/common/Loading";
 
 const Player = () => {
   const { courseId } = useParams();
-  const { enrolledCourses, calculateCourseChapterTime, userData, getToken, backendUrl } =
-    useContext(AppContext);
+  const {
+    enrolledCourses,
+    calculateCourseChapterTime,
+    userData,
+    getToken,
+    backendUrl,
+  } = useContext(AppContext);
   const [courseData, setCourseData] = useState(null);
   const [playerData, setPlayerData] = useState(null);
   const [progressData, setProgressData] = useState(null);
   const [initialRating, setInitialRating] = useState(0);
+  const [comment, setComment] = useState("");
 
   const [openSections, setOpenSections] = useState({
     0: true,
@@ -105,6 +111,30 @@ const Player = () => {
     }
   };
 
+  const handleCommentSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const token = await getToken();
+      const { data } = await axios.post(
+        `${backendUrl}/api/user/add-comment`,
+        { courseId: courseData._id, comment },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (data.success) {
+        toast.success(data.message);
+        setComment("");
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.info(error.response.data.message);
+    }
+  };
+
   const toggleOpenSections = (index) => {
     setOpenSections((prev) => ({ ...prev, [index]: !prev[index] }));
   };
@@ -164,7 +194,12 @@ const Player = () => {
                         <li key={i} className="flex items-start gap-2 py-1">
                           <img
                             src={
-                              progressData && progressData.lectureCompleted.includes(lecture.lectureId) ? assets.blue_tick_icon : assets.play_icon
+                              progressData &&
+                              progressData.lectureCompleted.includes(
+                                lecture.lectureId
+                              )
+                                ? assets.blue_tick_icon
+                                : assets.play_icon
                             }
                             alt="play_icon"
                             className="w-4 h-4 mt-1"
@@ -205,8 +240,27 @@ const Player = () => {
           </div>
           <div className="flex items-center gap-2 py-3 mt-10">
             <h1 className="text-xl font-bold">Rate this course:</h1>
-            <RatingComponent initialRating={initialRating} onRate={handleRating} />
+            <RatingComponent
+              initialRating={initialRating}
+              onRate={handleRating}
+            />
           </div>
+          <div className="flex flex-col gap-2 mt-4">
+            <h1 className="text-xl font-bold">Comment this course:</h1>
+            <textarea
+              id="comment"
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              required
+              className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500"
+            />
+          </div>
+          <button
+            type="button" onClick={handleCommentSubmit}
+            className="bg-black text-white w-max py-2.5 px-8 rounded my-4"
+          >
+            Submit
+          </button>
         </div>
         {/* right column */}
         <div className="md:mt-10">
@@ -222,8 +276,14 @@ const Player = () => {
                   {playerData.chapter}.{playerData.lecture}{" "}
                   {playerData.lectureTitle}
                 </p>
-                <button className="text-blue-600" onClick={() => markLectureAsCompleted(playerData.lectureId)}>
-                  {progressData && progressData.lectureCompleted.includes(playerData.lectureId) ? "Completed" : "Mark Completed"}
+                <button
+                  className="text-blue-600"
+                  onClick={() => markLectureAsCompleted(playerData.lectureId)}
+                >
+                  {progressData &&
+                  progressData.lectureCompleted.includes(playerData.lectureId)
+                    ? "Completed"
+                    : "Mark Completed"}
                 </button>
               </div>
             </div>

@@ -56,7 +56,7 @@ export const AppContextProvider = ({ children }) => {
   const calculateAverageRating = (course) => {
     if (course.courseRatings.length === 0) return 0;
     const totalRating = course.courseRatings.reduce((acc, rating) => acc + rating.rating, 0);
-    return Math.floor(totalRating / course.courseRatings.length);
+    return Math.ceil(totalRating / course.courseRatings.length);
   };
 
   // Function to calculate the course chapter time

@@ -20,6 +20,7 @@ const CourseDetails = () => {
   });
   const [isAlreadyEnrolled, setIsAlreadyEnrolled] = useState(false);
   const [playerData, setPlayerData] = useState(null);
+  const [activeTab, setActiveTab] = useState("description");
   const {
     allCourses,
     currency,
@@ -194,16 +195,76 @@ const CourseDetails = () => {
                   ))}
                 </div>
               </div>
-              <div className="py-20 text-sm md:text-default">
-                <h2 className="text-xl font-semibold text-gray-800">
-                  Course Description
-                </h2>
-                <p
-                  className="pt-3 rich-text"
-                  dangerouslySetInnerHTML={{
-                    __html: courseData.courseDescription,
-                  }}
-                ></p>
+
+              <div className="pt-8">
+                <div className="flex gap-4 border-b border-gray-300 ">
+                  <button
+                    className={`${
+                      activeTab === "description"
+                        ? "text-blue-600 font-semibold border-b-2 border-gray-600"
+                        : "text-gray-600"
+                    } pb-5`}
+                    onClick={() => setActiveTab("description")}
+                  >
+                    Course Description
+                  </button>
+                  <button
+                    className={`${
+                      activeTab === "comments"
+                        ? "text-blue-600 font-semibold border-b-2 border-gray-600"
+                        : "text-gray-600"
+                    } pb-5`}
+                    onClick={() => setActiveTab("comments")}
+                  >
+                    Comments
+                  </button>
+                </div>
+                {activeTab === "description" && (
+                  <div className="pt-6">
+                    <h2 className="text-xl font-semibold text-gray-800">
+                      Course Description
+                    </h2>
+                    <p
+                      className="pt-3 rich-text"
+                      dangerouslySetInnerHTML={{
+                        __html: courseData.courseDescription,
+                      }}
+                    ></p>
+                  </div>
+                )}
+                {activeTab === "comments" && (
+                  <div className="pt-6">
+                    <h2 className="text-xl font-semibold text-gray-800">
+                      Comments
+                    </h2>
+                    <ul className={`flex flex-col pt-4 text-sm md:text-default gap-3 text-gray-500`}>
+                      {courseData.courseRatings.map((rating, index) => (
+                        <li key={index} className={`flex gap-4 ${courseData.courseRatings.length - 1 === index ? "" : "border-b border-gray-300"}`}>
+                          <img
+                            src={rating.userId.imageUrl}
+                            alt={rating.userId.imageUrl}
+                            className="w-12 h-12 rounded-full"
+                          />
+                          <div className="flex flex-col gap-1">
+                            <p className="font-semibold">
+                              {rating.userId.name}
+                            </p>
+                            <p className="flex gap-1 items-center">
+                              {[...Array(rating.rating)].map((_, i) => (
+                                <img
+                                  className="w-3.5 h-3.5"
+                                  key={i}
+                                  src={assets.star}
+                                />
+                              ))}
+                            </p>
+                            <p>{rating.comment}</p>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
             </div>
             {/* right */}

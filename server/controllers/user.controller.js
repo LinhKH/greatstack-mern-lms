@@ -273,3 +273,49 @@ export const addCourseRating = async (req, res) => {
   }
 
 };
+
+// Add a comment to a course
+export const addCourseComment = async (req, res) => {
+  try {
+    const { courseId, comment } = req.body;
+    const userId = req.auth.userId;
+
+    if (!userId) {
+      return res.status(401).json({ error: "User not authenticated" });
+    }
+
+    const user = await UserModel.findOne({ clerkUserId: userId });
+
+    if (!user) {
+      return res.status(404).json("User not found!");
+    }
+
+    const course = await CourseModel.findById(courseId);
+
+    if (!course) {
+      return res.status(404).json({ success: false, message: "Course not found" });
+    }
+
+    const existingRatingIndex = course.courseRatings.findIndex(
+      (courseRating) => courseRating.userId.toString() === user._id.toString()
+    );
+
+    if (existingRatingIndex !== -1) {
+      if (course.courseRatings[existingRatingIndex].comment) {
+        return res
+          .status(400)
+          .json({ success: false, message: "User have already commented on this course" });
+      }
+      course.courseRatings[existingRatingIndex].comment = comment;
+    } else {
+      course.courseRatings.push({ userId: user._id, comment });
+    }
+
+    await course.save();
+
+    res.json({ success: true, message: "Comment added successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Failed to add comment" });
+  }
+};
