@@ -208,9 +208,9 @@ export const getCourseProgress = async (req, res) => {
       courseId,
     });
 
-    if (!progressData) {
-      return res.status(404).json("Course progress not found!");
-    }
+    // if (!progressData) {
+    //   return res.status(404).json("Course progress not found!");
+    // }
 
     res.json({ success: true, progressData });
   } catch (error) {
