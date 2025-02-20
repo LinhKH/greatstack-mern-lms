@@ -151,14 +151,14 @@ export const getEducatorDashboardData = async (req, res) => {
       });
     }
 
-    // const enrolledStudents = purchasedCourses.reduce((acc, purchased) => {
-    //   if (!acc[purchased.userId]) {
-    //     acc[purchased.userId] = [purchased.courseId];
-    //   } else {
-    //     acc[purchased.userId].push(purchased.courseId);
-    //   }
-    //   return acc;
-    // }, {});
+    const enrolledStudents = purchasedCourses.reduce((acc, purchased) => {
+      if (!acc[purchased.userId]) {
+        acc[purchased.userId] = [purchased.courseId];
+      } else {
+        acc[purchased.userId].push(purchased.courseId);
+      }
+      return acc;
+    }, {});
 
     res.json({
       success: true,
@@ -166,6 +166,7 @@ export const getEducatorDashboardData = async (req, res) => {
         totalEarning,
         totalCourses,
         enrolledStudentsData,
+        enrolledStudents
       },
     });
   } catch (error) {

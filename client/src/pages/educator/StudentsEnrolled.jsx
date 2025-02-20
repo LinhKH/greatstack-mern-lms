@@ -1,17 +1,34 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { dummyStudentEnrolled } from "../../assets/assets";
 import Loading from "../../components/common/Loading";
+import { AppContext } from "../../context/AppContext";
+import { toast } from "sonner";
+import axios from "axios";
 
 const StudentsEnrolled = () => {
   const [enrolledStudents, setEnrolledStudents] = useState();
 
-  const fetchEnrolledStudents = () => {
-    setEnrolledStudents(dummyStudentEnrolled);
+  const { backendUrl, isEducator, getToken } = useContext(AppContext);
+
+  const fetchEnrolledStudents = async () => {
+    // setEnrolledStudents(dummyStudentEnrolled);
+    try {
+      const token = await getToken();
+      const { data } = await axios.get(`${backendUrl}/api/educator/enrolled-students`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      data.success && setEnrolledStudents(data.enrolledStudentsData.reverse());
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
+    }
   };
 
   useEffect(() => {
-    fetchEnrolledStudents();
-  }, [enrolledStudents]);
+    isEducator && fetchEnrolledStudents();
+  }, [isEducator]);
 
   return enrolledStudents ? (
     <div className="h-screen flex flex-col items-start justify-between md:p-8 md:pb-0 p-4 pt-8 pb-0">
@@ -49,7 +66,7 @@ const StudentsEnrolled = () => {
                   </td>
                   <td className="px-4 py-3 truncate">{item.courseTitle}</td>
                   <td className="px-4 py-3 hidden sm:table-cell">
-                    {new Date(item.purchaseDate).toLocaleDateString()}
+                    {new Date(item.purchasedAt).toLocaleDateString()}
                   </td>
                 </tr>
               ))}

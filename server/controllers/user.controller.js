@@ -120,7 +120,7 @@ export const purchaseCourse = async (req, res) => {
       },
       line_items: line_items,
       success_url: `${process.env.CLIENT_URL}/loading/my-enrollments`,
-      cancel_url: `${process.env.CLIENT_URL}/cancel`,
+      cancel_url: `${process.env.CLIENT_URL}/loading/cancel`,
     };
 
     const session = await Stripe.checkout.sessions.create(params);
@@ -157,13 +157,17 @@ export const updateCourseProgress = async (req, res) => {
     });
     if (progressData) {
       if (progressData.lectureCompleted.includes(lectureId)) {
-        return res.json({
-          success: true,
-          message: "Lecture already completed",
-        });
+        // return res.json({
+        //   success: true,
+        //   message: "Lecture already completed",
+        // });
+        // remove lecture from completed list
+        progressData.lectureCompleted = progressData.lectureCompleted.filter((lecture) => lecture !== lectureId);
+        progressData.save();
+      } else {
+        progressData.lectureCompleted.push(lectureId);
+        progressData.save();
       }
-      progressData.lectureCompleted.push(lectureId);
-      progressData.save();
     } else {
       const newProgressData = {
         userId: user._id,

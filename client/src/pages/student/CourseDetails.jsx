@@ -221,7 +221,7 @@ const CourseDetails = () => {
                 {daysLeft && (
                   <div className="flex items-center gap-2">
                     <img
-                      className="w-3.5"
+                      className="w-3.5 animate-bounce"
                       src={assets.time_left_clock_icon}
                       alt="time_left_clock_icon"
                     />
@@ -283,11 +283,10 @@ const CourseDetails = () => {
                     What's in the course?
                   </p>
                   <ul className="ml-4 pt-2 text-sm md:text-default list-disc text-gray-500">
-                    <li>Lifetime access with free updates.</li>
-                    <li>Live Chat Feature.</li>
-                    <li>Order Management Feature</li>
-                    <li>Creating a Custom Page Builder</li>
-                    <li>Managing Dynamic Newsletters</li>
+                    {courseData.whatsInTheCourse &&
+                      courseData.whatsInTheCourse
+                        .split(";")
+                        .map((item, index) => <li key={index}>{item}</li>)}
                   </ul>
                 </div>
               </div>
