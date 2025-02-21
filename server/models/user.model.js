@@ -16,6 +16,11 @@ const userSchema = new mongoose.Schema(
       required: [true, "provide email"],
       unique: true,
     },
+    role: {
+      type: String,
+      enum: ["educator", "student"],
+      default: "student",
+    },
     imageUrl: {
       type: String,
       required: [true, "provide image url"],

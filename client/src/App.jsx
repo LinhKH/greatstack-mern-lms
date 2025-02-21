@@ -14,6 +14,8 @@ import StudentsEnrolled from "./pages/educator/StudentsEnrolled";
 import Navbar from "./components/student/Navbar";
 import "quill/dist/quill.snow.css";
 import { Toaster } from "sonner";
+import { ProtectedRoute, AdminRoute } from "./middleware/ProtectedRoutes";
+import PurchaseCourseProtectedRoute from "./middleware/PurchaseCourseProtectedRoute";
 
 const App = () => {
   const isEducatorPage = useMatch("/educator/*");
@@ -25,10 +27,33 @@ const App = () => {
         <Route path="/course-list" element={<CoursesList />} />
         <Route path="/course-list/:input" element={<CoursesList />} />
         <Route path="/course/:id" element={<CourseDetails />} />
-        <Route path="/my-enrollments" element={<MyEnrollments />} />
-        <Route path="/player/:courseId" element={<Player />} />
+        <Route
+          path="/my-enrollments"
+          element={
+            <ProtectedRoute>
+              <MyEnrollments />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/player/:courseId"
+          element={
+            <ProtectedRoute>
+              <PurchaseCourseProtectedRoute>
+                <Player />
+              </PurchaseCourseProtectedRoute>
+            </ProtectedRoute>
+          }
+        />
         <Route path="/loading/:path" element={<Loading />} />
-        <Route path="/educator" element={<Educator />}>
+        <Route
+          path="/educator"
+          element={
+            <AdminRoute>
+              <Educator />
+            </AdminRoute>
+          }
+        >
           <Route path="" element={<Dashboard />} />
           <Route path="educator" element={<Dashboard />} />
           <Route path="add-course" element={<AddCourse />} />

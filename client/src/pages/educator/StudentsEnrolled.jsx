@@ -22,7 +22,7 @@ const StudentsEnrolled = () => {
       data.success && setEnrolledStudents(data.enrolledStudentsData.reverse());
     } catch (error) {
       console.log(error);
-      toast.error(error.message);
+      toast.error(error.response.data.message);
     }
   };
 

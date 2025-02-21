@@ -21,6 +21,10 @@ const purchaseSchema = new mongoose.Schema(
       enum: ["pending", "completed", "failed"],
       default: "pending",
     },
+    paymentId: {
+      type: String,
+      default: "",
+    },
   },
   { timestamps: true }
 );

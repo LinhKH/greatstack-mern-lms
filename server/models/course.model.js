@@ -91,6 +91,15 @@ const courseSchema = new mongoose.Schema(
     whatsInTheCourse: {
       type: String,
     },
+    courseLevel: {
+      type: String,
+      enum: ["Beginner", "Medium", "Advance"],
+    },
+    category: {
+      type: mongoose.Schema.ObjectId,
+      ref: "Category",
+      required: false,
+    },
     courseContent: [chapterSchema],
     courseRatings: [ratingSchema],
     educator: {

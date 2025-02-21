@@ -125,6 +125,16 @@ export const purchaseCourse = async (req, res) => {
 
     const session = await Stripe.checkout.sessions.create(params);
 
+    if (!session.url) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Error while creating session" });
+    }
+
+    // Save the purchase record
+    newPurchase.paymentId = session.id;
+    await newPurchase.save();
+
     res.json({ success: true, session_url: session.url });
   } catch (error) {
     console.error(error);

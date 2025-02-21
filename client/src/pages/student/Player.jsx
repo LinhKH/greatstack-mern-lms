@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../context/AppContext";
-import { useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 import { assets } from "../../assets/assets";
 import humanizeDuration from "humanize-duration";
 import YouTube from "react-youtube";
@@ -256,7 +256,8 @@ const Player = () => {
             />
           </div>
           <button
-            type="button" onClick={handleCommentSubmit}
+            type="button"
+            onClick={handleCommentSubmit}
             className="bg-black text-white w-max py-2.5 px-8 rounded my-4"
           >
             Submit
